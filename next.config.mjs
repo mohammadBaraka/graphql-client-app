@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost", "images.unsplash.com"],
+    domains: [
+      "localhost",
+      "graqhql-server-app.onrender.com",
+      "images.unsplash.com",
+    ],
   },
 };
 
