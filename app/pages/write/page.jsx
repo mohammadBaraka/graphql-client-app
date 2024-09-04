@@ -8,7 +8,7 @@ import Image from "next/image";
 import { CreatePostMutation } from "@/app/graphql/Mutations/PostMutation";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
 import { msg } from "@/app/utils/msg";
-import { GetAllCategories } from "@/app/graphql/Queris/ctegory";
+import { GetAllCategories } from "@/app/graphql/Queris/Ctegory";
 
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
