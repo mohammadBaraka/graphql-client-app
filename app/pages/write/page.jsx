@@ -89,7 +89,6 @@ export default function Home() {
       <Input
         type="hidden"
         color="teal"
-        label="User Id"
         value={inputs.userId}
         name="usersId"
         onChange={handleChange}
