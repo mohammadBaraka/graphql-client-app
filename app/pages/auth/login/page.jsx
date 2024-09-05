@@ -20,19 +20,18 @@ const Login = () => {
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    login()
-      .then((res) => {
-        isLoggedInVar(true);
-        msg("success", "Login success");
-        setTimeout(() => {
-          router.push("/");
-        }, 2000);
-      })
-      .catch((error) => {
-        msg("error", error?.message);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login();
+      // isLoggedInVar(true);
+      msg("success", "Login success");
+      setTimeout(() => {
+        router.push("/");
       });
+    } catch (error) {
+      msg("error", error?.message);
+    }
   };
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -86,7 +85,7 @@ const Login = () => {
             fullWidth
             loading={loading ? true : false}
           >
-            sign up
+            Login
           </Button>
         </form>
       </Card>

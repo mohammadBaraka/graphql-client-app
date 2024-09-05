@@ -27,6 +27,8 @@ export const GET_USER = gql`
 `;
 
 export const GetAllUsers = () => {
-  const { data, error, loading } = useQuery(GET_ALL_USERS);
+  const { data, error, loading } = useQuery(GET_ALL_USERS, {
+    pollInterval: 5000,
+  });
   return { data, error, loading };
 };

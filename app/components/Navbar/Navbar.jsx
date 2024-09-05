@@ -6,8 +6,13 @@ import {
   Typography,
   Button,
   IconButton,
+  Input,
 } from "@material-tailwind/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  MagnifyingGlassPlusIcon,
+} from "@heroicons/react/24/outline";
 import { NavList } from "./NavList";
 import Link from "next/link";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
@@ -15,6 +20,7 @@ import { Loader } from "../Loader/Loader";
 import UserLoaged from "./UserLoaged";
 import { useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "@/app/graphql/Mutations/AuthMutation";
+import Search from "./Search";
 
 export function Header() {
   const isLogedIn = useReactiveVar(isLoggedInVar);
@@ -64,7 +70,7 @@ export function Header() {
           </div>
 
           <div className="hidden gap-2 lg:flex">
-            {data || isLogedIn ? (
+            {isLogedIn || data ? (
               <UserLoaged />
             ) : (
               <>
@@ -97,7 +103,7 @@ export function Header() {
         <Collapse open={openNav}>
           <NavList />
           <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-            {data || isLogedIn ? (
+            {isLogedIn || data ? (
               <UserLoaged />
             ) : (
               <>

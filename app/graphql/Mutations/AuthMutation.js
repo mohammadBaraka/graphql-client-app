@@ -33,7 +33,13 @@ const LOGIN_MUTATION = gql`
 `;
 const LOGOUT_MUTATION = gql`
   mutation {
-    logout
+    logout {
+      id
+      name
+      email
+      createdAt
+      updatedAt
+    }
   }
 `;
 
@@ -49,11 +55,13 @@ export const RegisterMutatin = () => {
 
 export const LoginMutation = (inputs) => {
   const [login, { data, error, loading }] = useMutation(LOGIN_MUTATION, {
+    refetchQueries: [{ query: GET_ALL_USERS }],
+    onCompleted: () => {
+      isLoggedInVar(true);
+    },
     update(cash, data) {
       console.log(data);
     },
-    refetchQueries: [{ query: GET_ALL_USERS }],
-    update(cash, data) {},
     variables: inputs,
   });
   return {
@@ -66,7 +74,12 @@ export const LoginMutation = (inputs) => {
 
 export const LogoutMutation = () => {
   const [logout, { data, error, loading }] = useMutation(LOGOUT_MUTATION, {
-    refetchQueries: [{ query: GET_ALL_USERS }],
+    onCompleted: () => {
+      isLoggedInVar(false);
+    },
+    update(cache, data) {
+      console.log("🚀 ~ update ~ Logout:", data);
+    },
   });
   return {
     logout,

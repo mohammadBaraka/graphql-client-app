@@ -17,15 +17,12 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { msg } from "@/app/utils/msg";
-import {
-  isLoggedInVar,
-  LogoutMutation,
-} from "@/app/graphql/Mutations/AuthMutation";
+import { LogoutMutation } from "@/app/graphql/Mutations/AuthMutation";
 import { Loader } from "../Loader/Loader";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
 
 const UserLoaged = () => {
-  const { data, error } = UseSendToken();
+  const { data, loading: tokenLoadeing } = UseSendToken();
   const user = data?.sendToken;
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -49,19 +46,18 @@ const UserLoaged = () => {
   ];
   const { logout, loading } = LogoutMutation();
 
-  const signOut = (e) => {
+  const signOut = async (e) => {
     e.preventDefault();
-    logout()
-      .then(() => {
-        isLoggedInVar(false);
-      })
-      .catch((error) => {
-        msg("error", error?.message);
-      });
+    try {
+      await logout();
+      msg("success", "Logout success");
+    } catch (err) {
+      msg("error", err?.message);
+    }
   };
   return (
     <>
-      {loading ? <Loader /> : null}
+      {loading || tokenLoadeing ? <Loader /> : null}
       <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
         <MenuHandler>
           <Button

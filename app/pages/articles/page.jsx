@@ -1,6 +1,7 @@
 "use client";
-import { GtAllPosts } from "@/app/graphql/Queris/Post";
+import { GetPost, GtAllPosts } from "@/app/graphql/Queris/Post";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -11,16 +12,17 @@ const Articles = () => {
   const post = data?.getAllPosts;
 
   return (
-    <div
-      className="w-[90%] mx-auto mt-marginGlobal 
+    <div className="w-[90%] mx-auto mt-marginGlobal flex flex-col justify-center">
+      <div
+        className=" 
     grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-    >
-      {post?.map((article) => {
-        const ownerPost = article?.Users?.id === user?.sendToken?.id;
-        return (
-          <>
+      >
+        {post?.map((article) => {
+          const ownerPost = article?.Users?.id === user?.sendToken?.id;
+          return (
             <article
-              key={article?.id} // Add a unique key prop if possible
+              key={article?.id}
+              // Add a unique key prop if possible
               className="mb-6 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm relative"
             >
               {ownerPost && (
@@ -70,9 +72,9 @@ const Articles = () => {
                 </Link>
               </div>
             </article>
-          </>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

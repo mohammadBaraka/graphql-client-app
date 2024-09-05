@@ -15,6 +15,23 @@ export const GET_ALL_POSTS = gql`
     }
   }
 `;
+// const GET_POST_BY_TITLE = gql`{
+//   query getPostByTitle($title:String) {
+
+//   }
+// }`;
+
+const GET_POST_BY_TITLE = gql`
+  query getPostByTitle($title: String) {
+    getPostByTitle(title: $title) {
+      id
+      title
+      desc
+      img
+      usersId
+    }
+  }
+`;
 
 const GET_Post = gql`
   query getPost($id: String) {
@@ -23,6 +40,9 @@ const GET_Post = gql`
       title
       desc
       img
+      categories {
+        id
+      }
       usersId
       Users {
         name
@@ -41,6 +61,13 @@ export const GtAllPosts = () => {
 export const GetPost = (id) => {
   const { data, error, loading } = useQuery(GET_Post, {
     variables: { id },
+  });
+  return { data, error, loading };
+};
+
+export const GetPostByTitle = (title) => {
+  const { data, error, loading } = useQuery(GET_POST_BY_TITLE, {
+    variables: { title },
   });
   return { data, error, loading };
 };

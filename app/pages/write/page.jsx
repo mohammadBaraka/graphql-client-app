@@ -1,29 +1,46 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import { Button, Checkbox, Input } from "@material-tailwind/react";
-
-import Image from "next/image";
-import { CreatePostMutation } from "@/app/graphql/Mutations/PostMutation";
+import { Input } from "@material-tailwind/react";
+import { useSearchParams } from "next/navigation";
+import {
+  CreatePostMutation,
+  UpdatePostMutation,
+} from "@/app/graphql/Mutations/PostMutation";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
 import { msg } from "@/app/utils/msg";
 import { GetAllCategories } from "@/app/graphql/Queris/Ctegory";
-
+import { GetPost } from "@/app/graphql/Queris/Post";
+import Bublish from "@/app/components/WriteComponents/Bublish";
+import Categoris from "@/app/components/WriteComponents/Categoris";
+import { Loader } from "@/app/components/Loader/Loader";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
-
 export default function Home() {
+  // ==================QUERY AND MUTATIONS================
+  const params = useSearchParams().get("post");
+  const { data: post, loading: loadingPost } = GetPost(params);
   const { data: token } = UseSendToken();
+  const {
+    updatePost,
+    data: dataUpdate,
+    loading: loadingUpdate,
+  } = UpdatePostMutation();
   const userId = token?.sendToken?.id;
-  const [inputs, setInputs] = useState({
-    title: "",
-    desc: "",
-    userId: userId,
-    img: null,
-    categoryId: [],
-  });
+  const categorieIds = post?.getOnePost?.categories?.map((cat) => cat?.id);
 
+  const [inputs, setInputs] = useState({
+    title: post?.getOnePost?.title || "",
+    desc: post?.getOnePost?.desc || "",
+    userId: userId,
+    img: post?.getOnePost?.img || null,
+    categoryId: categorieIds || [],
+  });
   const [imagePreview, setImagePreview] = useState(null);
+  useEffect(() => {
+    params && setImagePreview(post?.getOnePost?.img);
+  }, [params]);
+
   const {
     createPost,
     loading: loadingCreate,
@@ -33,21 +50,40 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createPost({
-      variables: {
-        title: inputs.title,
-        desc: inputs.desc,
-        img: inputs.img, // Ensure this is passed correctly
-        categoryId: inputs.categoryId,
-      },
-    })
-      .then(() => {
-        msg("success", "Post Created Successfully");
-      })
-      .catch((err) => {
-        console.log(err?.message);
-        msg("error", err?.message);
-      });
+    console.log({
+      id: params,
+      title: inputs.title,
+      desc: inputs.desc,
+      img: inputs.img,
+      categoryId: inputs.categoryId,
+    });
+    params
+      ? updatePost({
+          variables: {
+            id: params,
+            title: inputs.title,
+            desc: inputs.desc,
+            img: inputs.img,
+            userId: userId,
+            categoryId: inputs.categoryId,
+          },
+        })
+          .then((res) => {
+            console.log("🚀 ~ .then ~ res:", res);
+            msg("success", "Post Updated Successfully");
+          })
+          .catch((err) => {
+            console.log(err);
+            msg("error", err?.message);
+          })
+      : createPost()
+          .then(() => {
+            msg("success", "Post Created Successfully");
+          })
+          .catch((err) => {
+            console.log(err?.message);
+            msg("error", err?.message);
+          });
   };
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -55,7 +91,7 @@ export default function Home() {
     if (type === "file") {
       setInputs((prevState) => ({
         ...prevState,
-        [name]: files[0], // Set the file object
+        [name]: files[0],
       }));
 
       setImagePreview(URL.createObjectURL(files[0]));
@@ -64,8 +100,8 @@ export default function Home() {
       setInputs((prevState) => ({
         ...prevState,
         categoryId: prevState.categoryId.includes(name)
-          ? prevState.categoryId.filter((id) => id !== name) // Remove if already selected
-          : [...prevState.categoryId, name], // Add if not selected
+          ? prevState.categoryId.filter((id) => id !== name)
+          : [...prevState.categoryId, name],
       }));
     } else {
       setInputs((prevState) => ({
@@ -82,10 +118,11 @@ export default function Home() {
     }));
   };
 
-  const { data: categories, loading, error } = GetAllCategories();
+  const { data: categories, loading } = GetAllCategories();
 
   return (
     <>
+      {loading || loadingPost ? <Loader /> : null}
       <Input
         type="hidden"
         color="teal"
@@ -110,71 +147,22 @@ export default function Home() {
         </div>
 
         <div className="w-[40%] h-[65vh] flex flex-col gap-4">
-          <div className="border border-spacing-2 border-gray-200 h-auto py-4">
-            <div className="px-4 flex flex-col gap-3">
-              <h2 className="font-bold text-2xl">Publish</h2>
-              <span className="flex items-center gap-2">
-                <h3 className="font-bold text-lg">Status:</h3>
-                <p className="font-bold text-gray-400">Draft</p>
-              </span>
-
-              <span className="flex items-center gap-2">
-                <h3 className="font-bold text-lg">Visibility:</h3>
-                <p className="font-bold text-gray-400">Public</p>
-              </span>
-
-              <span className="flex items-center justify-between">
-                <input
-                  type="file"
-                  id="html"
-                  hidden
-                  name="img"
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="html"
-                  className="cursor-pointer tex-lg font-bold 
-                border border-dashed px-2 py-1 border-teal-500 border-spacing-7 rounded-lg"
-                >
-                  Upload Image
-                </label>
-                <Button
-                  loading={loadingCreate ? true : false}
-                  onClick={handleSubmit}
-                  color="teal"
-                  type="submit"
-                  className="rounded-lg p-2 w-1/3"
-                >
-                  Publish
-                </Button>
-              </span>
-              {imagePreview && (
-                <Image
-                  width={100}
-                  height={10}
-                  src={imagePreview}
-                  alt="image"
-                  className="rounded-full"
-                />
-              )}
-            </div>
-          </div>
+          {/* Bublish Component */}
+          <Bublish
+            loadingUpdate={loadingUpdate}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            params={params}
+            loadingCreate={loadingCreate}
+            imagePreview={imagePreview}
+          />
           <div className="border border-spacing-2 border-gray-200 h-full">
-            <div className="px-4 mt-2 flex flex-col">
-              <h2 className="font-bold text-2xl">Category</h2>
-              <span className="flex flex-col">
-                {categories?.getAllCategories?.map((cat) => (
-                  <Checkbox
-                    key={cat?.id}
-                    color="teal"
-                    label={cat?.title}
-                    checked={inputs.categoryId.includes(cat?.id)}
-                    name={cat?.id}
-                    onChange={handleChange}
-                  />
-                ))}
-              </span>
-            </div>
+            {/*  Categories Component */}
+            <Categoris
+              categories={categories}
+              handleChange={handleChange}
+              inputs={inputs}
+            />
           </div>
         </div>
       </main>

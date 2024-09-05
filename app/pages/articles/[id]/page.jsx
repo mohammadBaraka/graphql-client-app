@@ -1,19 +1,50 @@
 "use client";
+import { DeltePostMutation } from "@/app/graphql/Mutations/PostMutation";
 import { GetPost } from "@/app/graphql/Queris/Post";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
+import { msg, msgConfirm } from "@/app/utils/msg";
 import Image from "next/image";
-import { useParams, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
+import Swal from "sweetalert2";
 
 const SinglePost = () => {
-  const search = useSearchParams();
-  console.log("🚀 ~ singlePost ~ search:", search);
+  const navigate = useRouter();
   const param = useParams();
+  const { deletePost } = DeltePostMutation();
   const { data, loading, error } = GetPost(param.id);
   const post = data?.getOnePost;
+  console.log("🚀 ~ SinglePost ~ post:", post);
   const { data: user } = UseSendToken();
   const ownerPost = post?.usersId === user?.sendToken?.id;
-
+  const handleDelte = async () => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deletePost({
+            variables: {
+              id: param?.id,
+            },
+          });
+          msg("success", "Post deleted successfully");
+          setTimeout(() => {
+            navigate.push("/pages/articles");
+          }, 2000);
+        }
+      });
+    } catch (error) {
+      msg("error", error?.message);
+    }
+  };
   return (
     <div className="flex w-[80%] mx-auto mt-marginGlobal justify-between">
       {/* Main Post */}
@@ -41,20 +72,23 @@ const SinglePost = () => {
             {ownerPost && (
               <div className="flex items-center gap-2">
                 <Image
+                  onClick={handleDelte}
                   alt="delete"
                   src="/delete.png"
                   width={50}
                   height={50}
                   className="w-6 h-6 cursor-pointer"
                 />
-                <Image
-                  alt="edit"
-                  src="/edit.png"
-                  width={50}
-                  height={50}
-                  className="w-8 h-8 cursor-pointer"
-                  state={post}
-                />
+                <Link href={`/pages/write?post=${post?.id}`}>
+                  <Image
+                    alt="edit"
+                    src="/edit.png"
+                    width={50}
+                    height={50}
+                    className="w-8 h-8 cursor-pointer"
+                    state={post}
+                  />
+                </Link>
               </div>
             )}
           </div>
