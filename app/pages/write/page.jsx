@@ -3,7 +3,6 @@ import React, { useEffect, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { Input } from "@material-tailwind/react";
-import { useSearchParams } from "next/navigation";
 import {
   CreatePostMutation,
   UpdatePostMutation,
@@ -15,11 +14,16 @@ import { GetPost } from "@/app/graphql/Queris/Post";
 import Bublish from "@/app/components/WriteComponents/Bublish";
 import Categoris from "@/app/components/WriteComponents/Categoris";
 import { Loader } from "@/app/components/Loader/Loader";
+import GetPrams from "@/app/components/GetPrams";
+
+// Load Quill Editor dynamically for client-side rendering
+
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
+
 export default function Home() {
-  // ==================QUERY AND MUTATIONS================
-  const params = useSearchParams().get("post");
-  const { data: post, loading: loadingPost } = GetPost(params);
+  const postId = GetPrams();
+
+  const { data: postData, loading: loadingPost } = GetPost(postId);
   const { data: token } = UseSendToken();
   const {
     updatePost,
@@ -27,19 +31,23 @@ export default function Home() {
     loading: loadingUpdate,
   } = UpdatePostMutation();
   const userId = token?.sendToken?.id;
-  const categorieIds = post?.getOnePost?.categories?.map((cat) => cat?.id);
+  const categorieIds = postData?.getOnePost?.categories?.map((cat) => cat?.id);
 
   const [inputs, setInputs] = useState({
-    title: post?.getOnePost?.title || "",
-    desc: post?.getOnePost?.desc || "",
+    title: postData?.getOnePost?.title || "",
+    desc: postData?.getOnePost?.desc || "",
     userId: userId,
-    img: post?.getOnePost?.img || null,
+    img: postData?.getOnePost?.img || null,
     categoryId: categorieIds || [],
   });
+
   const [imagePreview, setImagePreview] = useState(null);
+
   useEffect(() => {
-    params && setImagePreview(post?.getOnePost?.img);
-  }, [params]);
+    if (postId && postData?.getOnePost?.img) {
+      setImagePreview(postData?.getOnePost?.img);
+    }
+  }, [postId, postData]);
 
   const {
     createPost,
@@ -50,17 +58,10 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
-      id: params,
-      title: inputs.title,
-      desc: inputs.desc,
-      img: inputs.img,
-      categoryId: inputs.categoryId,
-    });
-    params
+    postId
       ? updatePost({
           variables: {
-            id: params,
+            id: postId,
             title: inputs.title,
             desc: inputs.desc,
             img: inputs.img,
@@ -69,11 +70,9 @@ export default function Home() {
           },
         })
           .then((res) => {
-            console.log("🚀 ~ .then ~ res:", res);
             msg("success", "Post Updated Successfully");
           })
           .catch((err) => {
-            console.log(err);
             msg("error", err?.message);
           })
       : createPost()
@@ -81,10 +80,10 @@ export default function Home() {
             msg("success", "Post Created Successfully");
           })
           .catch((err) => {
-            console.log(err?.message);
             msg("error", err?.message);
           });
   };
+
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
 
@@ -96,7 +95,6 @@ export default function Home() {
 
       setImagePreview(URL.createObjectURL(files[0]));
     } else if (type === "checkbox") {
-      // Handle checkbox for category selection
       setInputs((prevState) => ({
         ...prevState,
         categoryId: prevState.categoryId.includes(name)
@@ -122,7 +120,7 @@ export default function Home() {
 
   return (
     <Suspense fallback={<Loader />}>
-      {loading || loadingPost ? <Loader /> : null}
+      {/* {loading || loadingPost ? <Loader /> : null} */}
       <Input
         type="hidden"
         color="teal"
@@ -142,22 +140,20 @@ export default function Home() {
           <QuillEditor
             className="h-full"
             value={inputs.desc}
-            onChange={handleDescChange} // Use handleDescChange for QuillEditor
+            onChange={handleDescChange}
           />
         </div>
 
         <div className="w-[40%] h-[65vh] flex flex-col gap-4">
-          {/* Bublish Component */}
           <Bublish
             loadingUpdate={loadingUpdate}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
-            params={params}
+            params={postId}
             loadingCreate={loadingCreate}
             imagePreview={imagePreview}
           />
           <div className="border border-spacing-2 border-gray-200 h-full">
-            {/*  Categories Component */}
             <Categoris
               categories={categories}
               handleChange={handleChange}
