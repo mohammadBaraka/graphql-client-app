@@ -7,11 +7,27 @@ export const GET_ALL_POSTS = gql`
       title
       desc
       img
-      createdAt
+      Users {
+        id
+        name
+        img
+      }
+      comments {
+        id
+        title
+        usersId
+        postsId
+        user {
+          id
+          name
+          img
+        }
+      }
       Users {
         id
         name
       }
+      createdAt
     }
   }
 `;
@@ -40,11 +56,16 @@ const GET_Post = gql`
       title
       desc
       img
+      comments {
+        id
+        title
+      }
       categories {
         id
       }
       usersId
       Users {
+        id
         name
         img
       }
