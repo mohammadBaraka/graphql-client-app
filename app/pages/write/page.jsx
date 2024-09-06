@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { Input } from "@material-tailwind/react";
@@ -119,7 +119,7 @@ export default function Home() {
   const { data: categories, loading } = GetAllCategories();
 
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       {loading || loadingPost ? <Loader /> : null}
       <Input
         type="hidden"
@@ -162,6 +162,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-    </>
+    </Suspense>
   );
 }
