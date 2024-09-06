@@ -79,7 +79,7 @@ const SinglePost = () => {
                   height={50}
                   className="w-6 h-6 cursor-pointer"
                 />
-                <Link href={`/pages/write?post=${post?.id}`}>
+                <Link href={`/pages/write/?post=${post?.id}`}>
                   <Image
                     alt="edit"
                     src="/edit.png"

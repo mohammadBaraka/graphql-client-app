@@ -14,14 +14,14 @@ import { GetPost } from "@/app/graphql/Queris/Post";
 import Bublish from "@/app/components/WriteComponents/Bublish";
 import Categoris from "@/app/components/WriteComponents/Categoris";
 import { Loader } from "@/app/components/Loader/Loader";
-import GetPrams from "@/app/components/GetPrams";
-
-// Load Quill Editor dynamically for client-side rendering
+import { useParams, useSearchParams } from "next/navigation";
 
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function Home() {
-  const postId = GetPrams();
+  const param = useParams();
+  console.log("🚀 ~ Home ~ param:", param.post);
+  const postId = useSearchParams().get("post");
 
   const { data: postData, loading: loadingPost } = GetPost(postId);
   const { data: token } = UseSendToken();

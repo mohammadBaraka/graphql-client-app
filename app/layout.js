@@ -3,6 +3,7 @@ import "./globals.css";
 import { Provider } from "./graphql/Provider";
 import { Header } from "./components/Navbar/Navbar";
 import Footer from "./components/Footer";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ export default function RootLayout({ children }) {
       <Provider>
         <body className={inter.className}>
           <Header />
-          {children}
+          <Suspense>{children}</Suspense>
           <Footer />
         </body>
       </Provider>
