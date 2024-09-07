@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
 export const msg = (icon, msg) => {
@@ -9,8 +10,6 @@ export const msg = (icon, msg) => {
     timer: 2000,
   });
 };
-
-export const msgConfirm = () => {};
 
 // export const msgConfirm = (text, fun) => {
 //   Swal.fire({
@@ -27,3 +26,10 @@ export const msgConfirm = () => {};
 //     }
 //   });
 // };
+
+export const msgSucess = (msg) => {
+  toast.success(msg);
+};
+export const msgError = (msg) => {
+  toast.error(msg);
+};

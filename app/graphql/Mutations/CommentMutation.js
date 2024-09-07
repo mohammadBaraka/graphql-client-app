@@ -9,7 +9,24 @@ const CREATE_COMMENT = gql`
     )
   }
 `;
+const DELETE_COMMENT = gql`
+  mutation deleteComment($id: String) {
+    deleteComment(id: $id)
+  }
+`;
 
+const UPDATE_COMMENT = gql`
+  mutation updateComment(
+    $id: String
+    $title: String
+    $postsId: String
+    $usersId: String
+  ) {
+    updateComment(
+      input: { id: $id, title: $title, postsId: $postsId, usersId: $usersId }
+    )
+  }
+`;
 export const CreateCommentMutation = () => {
   const [createComment, { data, error, loading }] = useMutation(
     CREATE_COMMENT,
@@ -26,6 +43,46 @@ export const CreateCommentMutation = () => {
   );
   return {
     createComment,
+    data,
+    error,
+    loading,
+  };
+};
+
+export const UpdateCommentMutation = () => {
+  const [updateComment, { data, error, loading }] = useMutation(
+    UPDATE_COMMENT,
+    {
+      refetchQueries: [{ query: GET_ALL_POSTS }],
+      update(cache, { data }) {
+        if (data) {
+          console.log("Comment updated:", data);
+        } else {
+          console.error("Failed to update comment");
+        }
+      },
+    }
+  );
+  return {
+    updateComment,
+    data,
+    error,
+    loading,
+  };
+};
+
+export const DeleteComeent = () => {
+  const [deleteComment, { data, error, loading }] = useMutation(
+    DELETE_COMMENT,
+    {
+      refetchQueries: [{ query: GET_ALL_POSTS }],
+      update(cache, { data }) {
+        console.log("Comment deleted:", data);
+      },
+    }
+  );
+  return {
+    deleteComment,
     data,
     error,
     loading,

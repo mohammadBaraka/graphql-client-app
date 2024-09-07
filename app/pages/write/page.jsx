@@ -128,8 +128,11 @@ export default function Home() {
         name="usersId"
         onChange={handleChange}
       />
-      <main className="flex justify-between w-[70%] mx-auto gap-8 mt-marginGlobal">
-        <div className="flex flex-col gap-4 h-[59vh] w-2/3">
+      <main
+        className="flex flex-col lg:flex-row  w-[100%] items-center lg:items-stretch
+      lg:w-[70%] mx-auto gap-8 lg:mt-marginGlobal"
+      >
+        <div className="flex flex-col gap-4 lg:h-[59vh] w-2/3">
           <Input
             color="teal"
             label="Title"
@@ -144,16 +147,18 @@ export default function Home() {
           />
         </div>
 
-        <div className="w-[40%] h-[65vh] flex flex-col gap-4">
-          <Bublish
-            loadingUpdate={loadingUpdate}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            params={postId}
-            loadingCreate={loadingCreate}
-            imagePreview={imagePreview}
-          />
-          <div className="border border-spacing-2 border-gray-200 h-full">
+        <div className="lg:w-[40%] w-2/3 h-[65vh] flex flex-row justify-between lg:flex-col gap-4">
+          <div className="w-1/2 lg:w-full">
+            <Bublish
+              loadingUpdate={loadingUpdate}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              params={postId}
+              loadingCreate={loadingCreate}
+              imagePreview={imagePreview}
+            />
+          </div>
+          <div className="border border-spacing-2 border-gray-200 h-full w-1/2 lg:w-full">
             <Categoris
               categories={categories}
               handleChange={handleChange}

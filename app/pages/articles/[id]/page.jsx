@@ -1,23 +1,28 @@
 "use client";
+import { Loader } from "@/app/components/Loader/Loader";
 import { DeltePostMutation } from "@/app/graphql/Mutations/PostMutation";
-import { GetPost } from "@/app/graphql/Queris/Post";
+import { GetPost, GetPostByCategory } from "@/app/graphql/Queris/Post";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
-import { msg, msgConfirm } from "@/app/utils/msg";
+import { msg } from "@/app/utils/msg";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+
 import React from "react";
 import Swal from "sweetalert2";
-
+import OtherPost from "@/app/components/OtherPost";
 const SinglePost = () => {
   const navigate = useRouter();
   const param = useParams();
-  const { deletePost } = DeltePostMutation();
+  const { deletePost, loading: deleteLoading } = DeltePostMutation();
   const { data, loading, error } = GetPost(param.id);
+  const { data: categories } = GetPostByCategory(
+    data?.getOnePost?.categories[0]?.id
+  );
   const post = data?.getOnePost;
-  console.log("🚀 ~ SinglePost ~ post:", post);
   const { data: user } = UseSendToken();
   const ownerPost = post?.usersId === user?.sendToken?.id;
+  // categories
   const handleDelte = async () => {
     try {
       Swal.fire({
@@ -45,9 +50,12 @@ const SinglePost = () => {
       msg("error", error?.message);
     }
   };
+
+  if (loading || deleteLoading) {
+    return <Loader />;
+  }
   return (
-    <div className="flex w-[80%] mx-auto mt-marginGlobal justify-between">
-      {/* Main Post */}
+    <div className="flex w-[90%] mx-auto mt-marginGlobal justify-between">
       <div className="w-1/2 flex flex-col gap-6">
         <Image
           src={post?.img}
@@ -70,7 +78,7 @@ const SinglePost = () => {
               {post?.Users?.name}
             </h4>
             {ownerPost && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-8">
                 <Image
                   onClick={handleDelte}
                   alt="delete"
@@ -100,7 +108,7 @@ const SinglePost = () => {
         />
       </div>
       {/* Other Posts */}
-      <div className="w-1/3">2</div>
+      <OtherPost categories={categories} />
     </div>
   );
 };

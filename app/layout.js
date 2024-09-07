@@ -4,6 +4,8 @@ import { Provider } from "./graphql/Provider";
 import { Header } from "./components/Navbar/Navbar";
 import Footer from "./components/Footer";
 import { Suspense } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Provider>
         <body className={inter.className}>
+          <ToastContainer position="bottom-right" />
           <Header />
           <Suspense>{children}</Suspense>
           <Footer />

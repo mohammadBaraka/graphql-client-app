@@ -31,11 +31,17 @@ export const GET_ALL_POSTS = gql`
     }
   }
 `;
-// const GET_POST_BY_TITLE = gql`{
-//   query getPostByTitle($title:String) {
 
-//   }
-// }`;
+const GET_POST_BY_CATEGOYR = gql`
+  query getPostByCategory($id: String) {
+    getPostByCategory(id: $id) {
+      id
+      title
+      desc
+      img
+    }
+  }
+`;
 
 const GET_POST_BY_TITLE = gql`
   query getPostByTitle($title: String) {
@@ -89,6 +95,13 @@ export const GetPost = (id) => {
 export const GetPostByTitle = (title) => {
   const { data, error, loading } = useQuery(GET_POST_BY_TITLE, {
     variables: { title },
+  });
+  return { data, error, loading };
+};
+
+export const GetPostByCategory = (id) => {
+  const { data, error, loading } = useQuery(GET_POST_BY_CATEGOYR, {
+    variables: { id },
   });
   return { data, error, loading };
 };

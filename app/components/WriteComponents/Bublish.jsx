@@ -11,7 +11,7 @@ const Bublish = ({
 }) => {
   return (
     <div className="border border-spacing-2 border-gray-200 h-auto py-4">
-      <div className="px-4 flex flex-col gap-3">
+      <div className="px-4 flex flex-col gap-3 ">
         <h2 className="font-bold text-2xl">{params ? "Edit" : "bublish"}</h2>
         <span className="flex items-center gap-2">
           <h3 className="font-bold text-lg">Status:</h3>
