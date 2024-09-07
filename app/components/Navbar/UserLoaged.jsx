@@ -16,12 +16,17 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { msg } from "@/app/utils/msg";
-import { LogoutMutation } from "@/app/graphql/Mutations/AuthMutation";
+import { msg, msgError, msgSucess } from "@/app/utils/msg";
+import {
+  isLoggedInVar,
+  LogoutMutation,
+} from "@/app/graphql/Mutations/AuthMutation";
 import { Loader } from "../Loader/Loader";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
+import { useRouter } from "next/navigation";
 
 const UserLoaged = () => {
+  const router = useRouter();
   const { data, loading: tokenLoadeing } = UseSendToken();
   const user = data?.sendToken;
 
@@ -36,6 +41,7 @@ const UserLoaged = () => {
     {
       label: "Edit Profile",
       icon: Cog6ToothIcon,
+      href: "/",
     },
 
     {
@@ -50,14 +56,16 @@ const UserLoaged = () => {
     e.preventDefault();
     try {
       await logout();
-      msg("success", "Logout success");
+      msgSucess("Logout success");
+      isLoggedInVar(false);
+      router.refresh();
     } catch (err) {
-      msg("error", err?.message);
+      msgError(err?.message);
     }
   };
   return (
     <>
-      {loading || tokenLoadeing ? <Loader /> : null}
+      {loading ? <Loader /> : null}
       <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
         <MenuHandler>
           <Button

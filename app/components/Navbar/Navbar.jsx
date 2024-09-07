@@ -24,6 +24,7 @@ import Search from "./Search";
 
 export function Header() {
   const isLogedIn = useReactiveVar(isLoggedInVar);
+  console.log("🚀 ~ Header ~ isLogedIn:", isLogedIn);
 
   const { data, error, loading } = UseSendToken();
   const [openNav, setOpenNav] = React.useState(false);
@@ -37,7 +38,6 @@ export function Header() {
 
   return (
     <>
-      {loading ? <Loader /> : null}
       <Navbar className=" max-w-full px-4 py-2">
         <div className="flex items-center justify-between text-blue-gray-900">
           <Typography

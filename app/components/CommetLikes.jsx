@@ -20,6 +20,7 @@ import {
 import { msg, msgError, msgSucess } from "../utils/msg";
 import CommetnsCard from "./CommetnsCard";
 import Swal from "sweetalert2";
+import { ToggleLike } from "../graphql/Mutations/LikeMutation";
 const CommetLikes = ({ article, user }) => {
   const [open, setOpen] = useState(1);
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
@@ -30,12 +31,11 @@ const CommetLikes = ({ article, user }) => {
     postsId: article?.id,
     usersId: user?.sendToken?.id,
   });
-  console.log("🚀 ~ CommetLikes ~ inputs:", inputs);
 
   const { updateComment, loading } = UpdateCommentMutation();
   const { createComment, loading: loadingCreate } = CreateCommentMutation();
   const { deleteComment } = DeleteComeent();
-
+  const { toggleLike } = ToggleLike();
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -100,6 +100,21 @@ const CommetLikes = ({ article, user }) => {
       msgError(error?.message);
     }
   };
+
+  const handleToggleLike = () => {
+    toggleLike({
+      variables: {
+        postsId: article?.id,
+        usersId: user?.sendToken?.id,
+      },
+    })
+      .then((res) => {
+        msgSucess(res?.data.toggleLike);
+      })
+      .catch((err) => {
+        msgError(err?.message);
+      });
+  };
   return (
     <Accordion open={open === 0}>
       <AccordionHeader>
@@ -113,8 +128,9 @@ const CommetLikes = ({ article, user }) => {
           </div>
 
           <div className="text-sm font-bold flex justify-center items-center gap-1">
-            Likes(0)
+            Likes ({article?.likes?.length})
             <HandThumbUpIcon
+              onClick={handleToggleLike}
               className="h-6 w-6 text-blue-500 "
               cursor-pointer
             />

@@ -23,6 +23,9 @@ export const GET_ALL_POSTS = gql`
           img
         }
       }
+      likes {
+        id
+      }
       Users {
         id
         name
