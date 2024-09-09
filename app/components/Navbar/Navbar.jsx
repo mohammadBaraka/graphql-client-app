@@ -24,7 +24,6 @@ import Search from "./Search";
 
 export function Header() {
   const isLogedIn = useReactiveVar(isLoggedInVar);
-  console.log("🚀 ~ Header ~ isLogedIn:", isLogedIn);
 
   const { data, error, loading } = UseSendToken();
   const [openNav, setOpenNav] = React.useState(false);

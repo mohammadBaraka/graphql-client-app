@@ -25,11 +25,11 @@ const Articles = () => {
 
             return (
               <>
-                <div
-                  key={article?.id}
-                  className="relative flex flex-col justify-between h-full"
-                >
-                  <article className="mb-6  rounded-lg border border-gray-100 bg-white shadow-sm ">
+                <div className="relative flex flex-col justify-between h-full">
+                  <article
+                    key={article?.id}
+                    className="mb-6  rounded-lg border border-gray-100 bg-white shadow-sm "
+                  >
                     {ownerPost && (
                       <div className="absolute -top-8 -left-5">
                         <Image
@@ -48,7 +48,7 @@ const Articles = () => {
                           src={article?.img}
                           width={100}
                           height={100}
-                          className="h-56 w-full object-cover"
+                          className="h-56 w-full"
                         />
                       )}
                     </div>

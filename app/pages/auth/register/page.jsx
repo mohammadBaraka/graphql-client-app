@@ -1,9 +1,10 @@
 "use client";
 
 import { RegisterMutatin } from "@/app/graphql/Mutations/AuthMutation";
-import { msg } from "@/app/utils/msg";
+import { msgError, msgSucess } from "@/app/utils/msg";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const Register = () => {
@@ -29,7 +30,7 @@ const Register = () => {
       setInputs((values) => ({ ...values, [e.target.name]: e.target.value }));
     }
   };
-
+  const router = useRouter();
   const handleSubmit = (event) => {
     event.preventDefault();
     register({
@@ -41,12 +42,11 @@ const Register = () => {
       },
     })
       .then(() => {
-        msg("success", "Account created successfully");
+        msgSucess("user created successfully");
+        router.push("/pages/auth/login");
       })
       .catch((err) => {
-        console.log(err);
-
-        msg("error", err.message);
+        msgError(err.message);
       });
   };
 

@@ -3,7 +3,7 @@ import {
   isLoggedInVar,
   LoginMutation,
 } from "@/app/graphql/Mutations/AuthMutation";
-import { msg } from "@/app/utils/msg";
+import { msgError, msgSucess } from "@/app/utils/msg";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,13 +24,13 @@ const Login = () => {
     e.preventDefault();
     try {
       await login();
-      // isLoggedInVar(true);
-      msg("success", "Login success");
+      isLoggedInVar(true);
+      msgSucess("Login Success");
       setTimeout(() => {
         router.push("/");
       });
     } catch (error) {
-      msg("error", error?.message);
+      msgError(error?.message);
     }
   };
   return (

@@ -8,7 +8,7 @@ import {
   UpdatePostMutation,
 } from "@/app/graphql/Mutations/PostMutation";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
-import { msg } from "@/app/utils/msg";
+import { msg, msgError, msgSucess } from "@/app/utils/msg";
 import { GetAllCategories } from "@/app/graphql/Queris/Ctegory";
 import { GetPost } from "@/app/graphql/Queris/Post";
 import Bublish from "@/app/components/WriteComponents/Bublish";
@@ -70,17 +70,30 @@ export default function Home() {
           },
         })
           .then((res) => {
-            msg("success", "Post Updated Successfully");
+            msgSucess("Post Updated Successfully");
+            setInputs({
+              title: "",
+              desc: "",
+              img: null,
+              categoryId: [],
+            });
           })
           .catch((err) => {
-            msg("error", err?.message);
+            msgError(err?.message);
           })
       : createPost()
           .then(() => {
-            msg("success", "Post Created Successfully");
+            msgSucess("Post Created Successfully");
+            setInputs({
+              title: "",
+              desc: "",
+              img: null,
+              categoryId: [],
+            });
+            setImagePreview(null);
           })
           .catch((err) => {
-            msg("error", err?.message);
+            msgError(err?.message);
           });
   };
 

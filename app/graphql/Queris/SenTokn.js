@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 
-const SEND_TOKEN = gql`
+export const SEND_TOKEN = gql`
   query {
     sendToken {
       id

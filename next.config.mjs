@@ -5,6 +5,7 @@ const nextConfig = {
       "localhost",
       "graqhql-server-app.onrender.com",
       "images.unsplash.com",
+      "res.cloudinary.com",
     ],
   },
 };

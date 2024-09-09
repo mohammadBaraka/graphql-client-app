@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
@@ -9,14 +10,21 @@ import {
   Button,
 } from "@material-tailwind/react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 const OtherPost = ({ categories }) => {
+  const { id } = useParams();
+
+  const categoriesData = categories?.getPostByCategory.filter((catId) => {
+    return catId.id !== id;
+  });
+
   return (
     <div className="hidden lg:block w-1/3">
       <h3 className="mb-4 text-gray-500 font-bold text-xl">
         Other Posts will be here
       </h3>
       <div className="hidden lg:flex flex-col gap-8">
-        {categories?.getPostByCategory.slice(0, 3).map((post) => (
+        {categoriesData?.slice(0, 3)?.map((post) => (
           <Card
             key={post?.id}
             className="w-full max-w-[48rem] flex-row h-[25%]"
@@ -46,7 +54,10 @@ const OtherPost = ({ categories }) => {
                   }}
                 />
               </Typography>
-              <Link href="#" className="inline-block">
+              <Link
+                href={`/pages/articles/${post?.id}`}
+                className="inline-block"
+              >
                 <Button variant="text" className="flex items-center gap-2">
                   Read More
                   <ArrowLongRightIcon

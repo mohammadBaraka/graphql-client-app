@@ -25,6 +25,7 @@ export const GET_ALL_POSTS = gql`
       }
       likes {
         id
+        usersId
       }
       Users {
         id
