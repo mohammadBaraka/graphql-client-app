@@ -20,6 +20,7 @@ const SinglePost = () => {
     data?.getOnePost?.categories[0]?.id
   );
   const post = data?.getOnePost;
+  console.log("🚀 ~ SinglePost ~ post:", post?.Users.id);
   const { data: user } = UseSendToken();
   const ownerPost = post?.usersId === user?.sendToken?.id;
   // categories
@@ -66,13 +67,15 @@ const SinglePost = () => {
         />
 
         <div className="flex items-center gap-4">
-          <Image
-            src={post?.Users?.img}
-            alt="user"
-            width={100}
-            height={100}
-            className="rounded-full w-24 h-24"
-          />
+          <Link href={`/pages/profile?id=${post?.Users.id}`}>
+            <Image
+              src={post?.Users?.img}
+              alt="user"
+              width={100}
+              height={100}
+              className="rounded-full w-24 h-24"
+            />
+          </Link>
           <div className="">
             <h4 className="text-xl font-bold text-gray-700">
               {post?.Users?.name}

@@ -36,7 +36,7 @@ const UserLoaged = () => {
     {
       label: `${user?.name} Profile`,
       icon: UserCircleIcon,
-      href: "/profile",
+      href: `/profile?id=${user?.id}`,
     },
     {
       label: "Edit Profile",

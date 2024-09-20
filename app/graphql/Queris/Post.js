@@ -43,6 +43,13 @@ const GET_POST_BY_CATEGOYR = gql`
       title
       desc
       img
+      comments {
+        id
+      }
+      likes {
+        id
+        usersId
+      }
     }
   }
 `;

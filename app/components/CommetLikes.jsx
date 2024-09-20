@@ -12,13 +12,13 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import Image from "next/image";
+
 import {
   CreateCommentMutation,
   DeleteComeent,
   UpdateCommentMutation,
 } from "../graphql/Mutations/CommentMutation";
-import { msg, msgError, msgSucess } from "../utils/msg";
+import { msgError, msgSucess } from "../utils/msg";
 import CommetnsCard from "./CommetnsCard";
 import Swal from "sweetalert2";
 import { ToggleLike } from "../graphql/Mutations/LikeMutation";
@@ -106,14 +106,15 @@ const CommetLikes = ({ article, user }) => {
   const handleToggleLike = () => {
     toggleLike({
       variables: {
-        postsId: article?.id,
-        usersId: user?.sendToken?.id,
+        postsId: inputs.postsId,
+        usersId: inputs.usersId,
       },
     })
       .then((res) => {
         msgSucess(res?.data.toggleLike);
       })
       .catch((err) => {
+        console.log("🚀 ~ handleToggleLike ~ err:", err);
         msgError(err?.message);
       });
   };

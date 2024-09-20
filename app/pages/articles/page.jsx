@@ -3,7 +3,6 @@ import { GtAllPosts } from "@/app/graphql/Queris/Post";
 import { UseSendToken } from "@/app/graphql/Queris/SenTokn";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
 import { Loader } from "@/app/components/Loader/Loader";
 import CommetLikes from "@/app/components/CommetLikes";
 const Articles = () => {
